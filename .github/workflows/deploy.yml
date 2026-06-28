@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Install
+        run: forge install
+
+      - name: Deploy
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          BASE_RPC: ${{ secrets.BASE_RPC }}
+        run: |
+          forge script script/Deploy.s.sol \
+            --rpc-url $BASE_RPC \
+            --private-key $PRIVATE_KEY \
+            --broadcast
