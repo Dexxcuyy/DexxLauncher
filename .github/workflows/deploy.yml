@@ -9,16 +9,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Checkout submodules
-  run: |
-    git submodule update --init --recursive
-
-- name: Install dependencies
-  run: |
-    forge install --no-commit
+      - name: Install dependencies
+        run: |
+          forge install foundry-rs/forge-std --no-commit
 
       - name: Deploy
         env:
