@@ -52,4 +52,48 @@ library ConfigBuilder {
         config.tickSpacing = TICK_SPACING;
         config.poolData = "";
     }
+
+    function buildMevModuleConfig()
+        internal
+        pure
+        returns (IClankerFactory.MevModuleConfig memory config)
+    {
+        config.mevModule = MEV_MODULE;
+        config.mevModuleData = "";
+    }
+
+    function buildLockerConfig()
+        internal
+        pure
+        returns (IClankerFactory.LockerConfig memory config)
+    {
+        config.locker = LOCKER;
+
+        config.rewardAdmins = new address[](0);
+        config.rewardRecipients = new address[](0);
+        config.rewardBps = new uint16[](0);
+
+        config.tickLower = new int24[](0);
+        config.tickUpper = new int24[](0);
+
+        config.positionBps = new uint16[](0);
+
+        config.lockerData = "";
+    }
+
+    function buildDeployment(
+        IClankerFactory.TokenConfig memory tokenConfig
+    )
+        internal
+        pure
+        returns (IClankerFactory.DeploymentConfig memory config)
+    {
+        config.tokenConfig = tokenConfig;
+        config.poolConfig = buildPoolConfig();
+        config.lockerConfig = buildLockerConfig();
+        config.mevModuleConfig = buildMevModuleConfig();
+
+        config.extensionConfigs =
+            new IClankerFactory.ExtensionConfig[](0);
+    }
 }

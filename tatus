@@ -1,0 +1,102 @@
+[1mdiff --git a/src/DexxLauncher.sol b/src/DexxLauncher.sol[m
+[1mindex 52a8632..c92ed77 100644[m
+[1m--- a/src/DexxLauncher.sol[m
+[1m+++ b/src/DexxLauncher.sol[m
+[36m@@ -4,7 +4,8 @@[m [mpragma solidity ^0.8.28;[m
+ import "./interfaces/IClankerFactory.sol";[m
+ import "./modules/ConfigBuilder.sol";[m
+ [m
+[31m-contract DexxLauncher {using ConfigBuilder for *;[m
+[32m+[m[32mcontract DexxLauncher {[m
+[32m+[m[32m    using ConfigBuilder for *;[m
+ [m
+     address public owner;[m
+     IClankerFactory public factory;[m
+[36m@@ -30,6 +31,34 @@[m [mcontract DexxLauncher {using ConfigBuilder for *;[m
+         token = factory.deployToken{value: msg.value}(config);[m
+     }[m
+ [m
+[32m+[m[32m    function launchSimple([m
+[32m+[m[32m        string calldata name,[m
+[32m+[m[32m        string calldata symbol,[m
+[32m+[m[32m        string calldata image,[m
+[32m+[m[32m        string calldata metadata,[m
+[32m+[m[32m        string calldata context[m
+[32m+[m[32m    )[m
+[32m+[m[32m        external[m
+[32m+[m[32m        payable[m
+[32m+[m[32m        onlyOwner[m
+[32m+[m[32m        returns (address token)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        IClankerFactory.TokenConfig memory tokenConfig =[m
+[32m+[m[32m            ConfigBuilder.buildTokenConfig([m
+[32m+[m[32m                owner,[m
+[32m+[m[32m                name,[m
+[32m+[m[32m                symbol,[m
+[32m+[m[32m                image,[m
+[32m+[m[32m                metadata,[m
+[32m+[m[32m                context[m
+[32m+[m[32m            );[m
+[32m+[m
+[32m+[m[32m        IClankerFactory.DeploymentConfig memory deployment =[m
+[32m+[m[32m            ConfigBuilder.buildDeployment(tokenConfig);[m
+[32m+[m
+[32m+[m[32m        token = factory.deployToken{value: msg.value}(deployment);[m
+[32m+[m[32m    }[m
+[32m+[m
+     function launchZeroSupply([m
+         IClankerFactory.TokenConfig calldata config[m
+     )[m
+[1mdiff --git a/src/modules/ConfigBuilder.sol b/src/modules/ConfigBuilder.sol[m
+[1mindex eedd352..d9f4e7b 100644[m
+[1m--- a/src/modules/ConfigBuilder.sol[m
+[1m+++ b/src/modules/ConfigBuilder.sol[m
+[36m@@ -52,4 +52,48 @@[m [mlibrary ConfigBuilder {[m
+         config.tickSpacing = TICK_SPACING;[m
+         config.poolData = "";[m
+     }[m
+[32m+[m
+[32m+[m[32m    function buildMevModuleConfig()[m
+[32m+[m[32m        internal[m
+[32m+[m[32m        pure[m
+[32m+[m[32m        returns (IClankerFactory.MevModuleConfig memory config)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        config.mevModule = MEV_MODULE;[m
+[32m+[m[32m        config.mevModuleData = "";[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    function buildLockerConfig()[m
+[32m+[m[32m        internal[m
+[32m+[m[32m        pure[m
+[32m+[m[32m        returns (IClankerFactory.LockerConfig memory config)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        config.locker = LOCKER;[m
+[32m+[m
+[32m+[m[32m        config.rewardAdmins = new address[](0);[m
+[32m+[m[32m        config.rewardRecipients = new address[](0);[m
+[32m+[m[32m        config.rewardBps = new uint16[](0);[m
+[32m+[m
+[32m+[m[32m        config.tickLower = new int24[](0);[m
+[32m+[m[32m        config.tickUpper = new int24[](0);[m
+[32m+[m
+[32m+[m[32m        config.positionBps = new uint16[](0);[m
+[32m+[m
+[32m+[m[32m        config.lockerData = "";[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    function buildDeployment([m
+[32m+[m[32m        IClankerFactory.TokenConfig memory tokenConfig[m
+[32m+[m[32m    )[m
+[32m+[m[32m        internal[m
+[32m+[m[32m        pure[m
+[32m+[m[32m        returns (IClankerFactory.DeploymentConfig memory config)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        config.tokenConfig = tokenConfig;[m
+[32m+[m[32m        config.poolConfig = buildPoolConfig();[m
+[32m+[m[32m        config.lockerConfig = buildLockerConfig();[m
+[32m+[m[32m        config.mevModuleConfig = buildMevModuleConfig();[m
+[32m+[m
+[32m+[m[32m        config.extensionConfigs =[m
+[32m+[m[32m            new IClankerFactory.ExtensionConfig[](0);[m
+[32m+[m[32m    }[m
+ }[m
