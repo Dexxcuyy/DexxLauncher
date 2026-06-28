@@ -2,8 +2,9 @@
 pragma solidity ^0.8.28;
 
 import "./interfaces/IClankerFactory.sol";
+import "./modules/ConfigBuilder.sol";
 
-contract DexxLauncher {
+contract DexxLauncher {using ConfigBuilder for *;
 
     address public owner;
     IClankerFactory public factory;
