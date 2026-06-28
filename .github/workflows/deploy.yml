@@ -12,8 +12,9 @@ jobs:
 
       - uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Install
-        run: forge install
+      - name: Install dependencies
+        run: |
+          forge install foundry-rs/forge-std --no-commit
 
       - name: Deploy
         env:
