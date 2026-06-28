@@ -12,9 +12,13 @@ jobs:
 
       - uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Install dependencies
-        run: |
-          forge install foundry-rs/forge-std --no-commit
+      - name: Checkout submodules
+  run: |
+    git submodule update --init --recursive
+
+- name: Install dependencies
+  run: |
+    forge install --no-commit
 
       - name: Deploy
         env:
