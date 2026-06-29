@@ -12,8 +12,9 @@ jobs:
 
       - uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Clone forge-std
+      - name: Prepare forge-std
         run: |
+          rm -rf lib/forge-std
           mkdir -p lib
           git clone https://github.com/foundry-rs/forge-std.git lib/forge-std
 
