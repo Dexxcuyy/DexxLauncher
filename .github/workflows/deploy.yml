@@ -21,12 +21,15 @@ jobs:
       - name: Build
         run: forge build
 
-      - name: Deploy
+      - name: Deploy & Verify
         env:
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PRIVATE_KEY: ${{ secrets.24db1a1eec1fbc7049802dc25a7ffc7eee30f776743dc0071028923e4d8801d3 }}
           BASE_RPC: ${{ secrets.BASE_RPC }}
+          ETHERSCAN_API_KEY: ${{ secrets.CZYM52CXJG7D5W9S2T515IUHQ2TNW6R3B9 }}
         run: |
           forge script script/Deploy.s.sol \
             --rpc-url $BASE_RPC \
             --private-key $PRIVATE_KEY \
-            --broadcast
+            --broadcast \
+            --verify \
+            --etherscan-api-key $ETHERSCAN_API_KEY
