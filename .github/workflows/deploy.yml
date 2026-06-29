@@ -31,5 +31,6 @@ jobs:
             --rpc-url "$BASE_RPC" \
             --private-key "$PRIVATE_KEY" \
             --broadcast \
+            --resume \
             --verify \
             --etherscan-api-key "$ETHERSCAN_API_KEY"
