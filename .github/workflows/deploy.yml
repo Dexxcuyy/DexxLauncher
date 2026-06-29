@@ -1,10 +1,10 @@
-name: Verify Contract
+name: Deploy & Verify
 
 on:
   workflow_dispatch:
 
 jobs:
-  verify:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,14 +21,14 @@ jobs:
       - name: Build
         run: forge build
 
-      - name: Verify on BaseScan
+      - name: Deploy
         env:
-          ETHERSCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          BASE_RPC: ${{ secrets.BASE_RPC }}
         run: |
-          forge verify-contract \
-            --chain base \
-            --watch \
-            --constructor-args $(cast abi-encode "constructor(address)" 0xE85A59c628F7d27878ACeB4bf3b35733630083a9) \
-            --etherscan-api-key "$ETHERSCAN_API_KEY" \
-            0xC7f2Cf4845C6db0e1a1e91ED41Bcd0FcC1b0E141 \
-            src/DexxLauncher.sol:DexxLauncher
+          forge script script/Deploy.s.sol \
+            --rpc-url "$BASE_RPC" \
+            --private-key "$PRIVATE_KEY" \
+            --broadcast \
+            --verify \
+            --etherscan-api-key "${{ secrets.BASESCAN_API_KEY }}"
